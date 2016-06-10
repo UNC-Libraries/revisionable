@@ -291,6 +291,10 @@ trait RevisionableTrait
      * Get the transaction that this revision is a part of. This value
      * should be set from within a the transaction block while saving
      * your revisionable model.
+     * 
+     * For example:
+     * $transactionId = Uuid::uuid1();
+     * DB::statement("set @transaction_id = '$transactionId';");
      **/
     public function getTransactionId()
     {
