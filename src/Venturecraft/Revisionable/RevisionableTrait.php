@@ -294,7 +294,7 @@ trait RevisionableTrait
      **/
     public function getTransactionId()
     {
-        return DB::select('select @transaction_id as id;')[0]->id;
+        return \DB::select('select @transaction_id as id;')[0]->id;
     }
 
     /**
