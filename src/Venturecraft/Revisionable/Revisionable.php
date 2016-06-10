@@ -143,6 +143,8 @@ class Revisionable extends Eloquent
                 $revisions[] = array(
                     'revisionable_type'     => get_class($this),
                     'revisionable_id'       => $this->getKey(),
+                    'transaction_id'        => $this->getTransactionId(),
+                    'ip_address'            => Request::ip(),
                     'key'                   => $key,
                     'old_value'             => array_get($this->originalData, $key),
                     'new_value'             => $this->updatedData[$key],
@@ -178,6 +180,8 @@ class Revisionable extends Eloquent
             $revisions[] = array(
                 'revisionable_type' => get_class($this),
                 'revisionable_id' => $this->getKey(),
+                'transaction_id' => $this->getTransactionId(),
+                'ip_address' => Request::ip(),
                 'key' => 'created_at',
                 'old_value' => null,
                 'new_value' => $this->created_at,
@@ -203,6 +207,8 @@ class Revisionable extends Eloquent
             $revisions[] = array(
                 'revisionable_type' => get_class($this),
                 'revisionable_id' => $this->getKey(),
+                'transaction_id' => $this->getTransactionId(),
+                'ip_address' => Request::ip(),
                 'key' => 'deleted_at',
                 'old_value' => null,
                 'new_value' => $this->deleted_at,

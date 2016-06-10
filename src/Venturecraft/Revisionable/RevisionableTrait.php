@@ -178,6 +178,8 @@ trait RevisionableTrait
                 $revisions[] = array(
                     'revisionable_type' => get_class($this),
                     'revisionable_id' => $this->getKey(),
+                    'transaction_id' => $this->getTransactionId(),
+                    'ip_address' => Request::ip(),
                     'key' => $key,
                     'old_value' => array_get($this->originalData, $key),
                     'new_value' => $this->updatedData[$key],
@@ -219,6 +221,8 @@ trait RevisionableTrait
             $revisions[] = array(
                 'revisionable_type' => get_class($this),
                 'revisionable_id' => $this->getKey(),
+                'transaction_id' => $this->getTransactionId(),
+                'ip_address' => Request::ip(),
                 'key' => 'created_at',
                 'old_value' => null,
                 'new_value' => $this->created_at,
@@ -247,6 +251,8 @@ trait RevisionableTrait
             $revisions[] = array(
                 'revisionable_type' => get_class($this),
                 'revisionable_id' => $this->getKey(),
+                'transaction_id' => $this->getTransactionId(),
+                'ip_address' => Request::ip(),
                 'key' => 'deleted_at',
                 'old_value' => null,
                 'new_value' => $this->deleted_at,
@@ -279,6 +285,16 @@ trait RevisionableTrait
         }
 
         return null;
+    }
+
+    /**
+     * Get the transaction that this revision is a part of. This value
+     * should be set from within a the transaction block while saving
+     * your revisionable model.
+     **/
+    public function getTransactionId()
+    {
+        return DB::select('select @transaction_id as id;')[0]->id;
     }
 
     /**
