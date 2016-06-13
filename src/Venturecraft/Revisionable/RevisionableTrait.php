@@ -177,15 +177,15 @@ trait RevisionableTrait
             foreach ($changes_to_record as $key => $change) {
                 $revisions[] = array(
                     'revisionable_type' => get_class($this),
-                    'revisionable_id' => $this->getKey(),
-                    'transaction_id' => $this->getTransactionId(),
-                    'ip_address' => \Request::ip(),
-                    'attribute' => $key,
-                    'old_value' => array_get($this->originalData, $key),
-                    'new_value' => $this->updatedData[$key],
-                    'user_id' => $this->getUserId(),
-                    'created_at' => new \DateTime(),
-                    'updated_at' => new \DateTime(),
+                    'revisionable_id'   => $this->getKey(),
+                    'transaction_id'    => $this->getTransactionId(),
+                    'ip_address'        => \Request::ip(),
+                    'field'             => $key,
+                    'old_value'         => array_get($this->originalData, $key),
+                    'new_value'         => $this->updatedData[$key],
+                    'user_id'           => $this->getUserId(),
+                    'created_at'        => new \DateTime(),
+                    'updated_at'        => new \DateTime(),
                 );
             }
 
@@ -220,15 +220,15 @@ trait RevisionableTrait
         {
             $revisions[] = array(
                 'revisionable_type' => get_class($this),
-                'revisionable_id' => $this->getKey(),
-                'transaction_id' => $this->getTransactionId(),
-                'ip_address' => \Request::ip(),
-                'attribute' => 'created_at',
-                'old_value' => null,
-                'new_value' => $this->created_at,
-                'user_id' => $this->getUserId(),
-                'created_at' => new \DateTime(),
-                'updated_at' => new \DateTime(),
+                'revisionable_id'   => $this->getKey(),
+                'transaction_id'    => $this->getTransactionId(),
+                'ip_address'        => \Request::ip(),
+                'field'             => 'created_at',
+                'old_value'         => null,
+                'new_value'         => $this->created_at,
+                'user_id'           => $this->getUserId(),
+                'created_at'        => new \DateTime(),
+                'updated_at'        => new \DateTime(),
             );
 
             $revision = new Revision;
@@ -250,15 +250,15 @@ trait RevisionableTrait
         ) {
             $revisions[] = array(
                 'revisionable_type' => get_class($this),
-                'revisionable_id' => $this->getKey(),
-                'transaction_id' => $this->getTransactionId(),
-                'ip_address' => \Request::ip(),
-                'attribute' => 'deleted_at',
-                'old_value' => null,
-                'new_value' => $this->deleted_at,
-                'user_id' => $this->getUserId(),
-                'created_at' => new \DateTime(),
-                'updated_at' => new \DateTime(),
+                'revisionable_id'   => $this->getKey(),
+                'transaction_id'    => $this->getTransactionId(),
+                'ip_address'        => \Request::ip(),
+                'field'             => 'deleted_at',
+                'old_value'         => null,
+                'new_value'         => $this->deleted_at,
+                'user_id'           => $this->getUserId(),
+                'created_at'        => new \DateTime(),
+                'updated_at'        => new \DateTime(),
             );
             $revision = new \Venturecraft\Revisionable\Revision;
             \DB::table($revision->getTable())->insert($revisions);
@@ -331,21 +331,21 @@ trait RevisionableTrait
     /**
      * Check if this field should have a revision kept
      *
-     * @param string $key
+     * @param string $field
      *
      * @return bool
      */
-    private function isRevisionable($key)
+    private function isRevisionable($field)
     {
 
         // If the field is explicitly revisionable, then return true.
         // If it's explicitly not revisionable, return false.
         // Otherwise, if neither condition is met, only return true if
         // we aren't specifying revisionable fields.
-        if (isset($this->doKeep) && in_array($key, $this->doKeep)) {
+        if (isset($this->doKeep) && in_array($field, $this->doKeep)) {
             return true;
         }
-        if (isset($this->dontKeep) && in_array($key, $this->dontKeep)) {
+        if (isset($this->dontKeep) && in_array($field, $this->dontKeep)) {
             return false;
         }
 
