@@ -55,12 +55,12 @@ class Revision extends Eloquent
      */
     public function fieldName()
     {
-        if ($formatted = $this->formatFieldName($this->key)) {
+        if ($formatted = $this->formatFieldName($this->attribute)) {
             return $formatted;
-        } elseif (strpos($this->key, '_id')) {
-            return str_replace('_id', '', $this->key);
+        } elseif (strpos($this->attribute, '_id')) {
+            return str_replace('_id', '', $this->attribute);
         } else {
-            return $this->key;
+            return $this->attribute;
         }
     }
 
@@ -69,18 +69,18 @@ class Revision extends Eloquent
      *
      * Allow overrides for field names.
      *
-     * @param $key
+     * @param $attribute
      *
      * @return bool
      */
-    private function formatFieldName($key)
+    private function formatFieldName($attribute)
     {
         $related_model = $this->revisionable_type;
         $related_model = new $related_model;
         $revisionFormattedFieldNames = $related_model->getRevisionFormattedFieldNames();
 
-        if (isset($revisionFormattedFieldNames[$key])) {
-            return $revisionFormattedFieldNames[$key];
+        if (isset($revisionFormattedFieldNames[$attribute])) {
+            return $revisionFormattedFieldNames[$attribute];
         }
 
         return false;
@@ -133,8 +133,8 @@ class Revision extends Eloquent
             $main_model = new $main_model;
 
             try {
-                if (strpos($this->key, '_id')) {
-                    $related_model = str_replace('_id', '', $this->key);
+                if (strpos($this->attribute, '_id')) {
+                    $related_model = str_replace('_id', '', $this->attribute);
 
                     // Now we can find out the namespace of of related model
                     if (!method_exists($main_model, $related_model)) {
@@ -157,17 +157,17 @@ class Revision extends Eloquent
                     if (!$item) {
                         $item = new $related_class;
 
-                        return $this->format($this->key, $item->getRevisionUnknownString());
+                        return $this->format($this->attribute, $item->getRevisionUnknownString());
                     }
 
 
                     // see if there's an available mutator
-                    $mutator = 'get' . studly_case($this->key) . 'Attribute';
+                    $mutator = 'get' . studly_case($this->attribute) . 'Attribute';
                     if (method_exists($item, $mutator)) {
-                        return $this->format($item->$mutator($this->key), $item->identifiableName());
+                        return $this->format($item->$mutator($this->attribute), $item->identifiableName());
                     }
 
-                    return $this->format($this->key, $item->identifiableName());
+                    return $this->format($this->attribute, $item->identifiableName());
                 }
             } catch (\Exception $e) {
                 // Just a fail-safe, in the case the data setup isn't as expected
@@ -178,13 +178,13 @@ class Revision extends Eloquent
             // if there was an issue
             // or, if it's a normal value
 
-            $mutator = 'get' . studly_case($this->key) . 'Attribute';
+            $mutator = 'get' . studly_case($this->attribute) . 'Attribute';
             if (method_exists($main_model, $mutator)) {
-                return $this->format($this->key, $main_model->$mutator($this->$which_value));
+                return $this->format($this->attribute, $main_model->$mutator($this->$which_value));
             }
         }
 
-        return $this->format($this->key, $this->$which_value);
+        return $this->format($this->attribute, $this->$which_value);
     }
 
     /**
@@ -239,19 +239,19 @@ class Revision extends Eloquent
     /**
      * Format the value according to the $revisionFormattedFields array.
      *
-     * @param  $key
+     * @param  $attribute
      * @param  $value
      *
      * @return string formatted value
      */
-    public function format($key, $value)
+    public function format($attribute, $value)
     {
         $related_model = $this->revisionable_type;
         $related_model = new $related_model;
         $revisionFormattedFields = $related_model->getRevisionFormattedFields();
 
-        if (isset($revisionFormattedFields[$key])) {
-            return FieldFormatter::format($key, $value, $revisionFormattedFields);
+        if (isset($revisionFormattedFields[$attribute])) {
+            return FieldFormatter::format($attribute, $value, $revisionFormattedFields);
         } else {
             return $value;
         }
