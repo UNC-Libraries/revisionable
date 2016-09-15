@@ -133,6 +133,7 @@ class Revision extends Eloquent
             $main_model = new $main_model;
 
             try {
+                // If this is a foreign key
                 if (strpos($this->field, '_id')) {
                     $related_model = str_replace('_id', '', $this->field);
 
@@ -161,10 +162,10 @@ class Revision extends Eloquent
                     }
 
 
-                    // see if there's an available mutator
-                    $mutator = 'get' . studly_case($this->field) . 'Attribute';
-                    if (method_exists($item, $mutator)) {
-                        return $this->format($item->$mutator($this->field), $item->identifiableName());
+                    // see if there's an available accessor (e.g. getFormatIdAttribute)
+                    $accessor = 'get' . studly_case($this->field) . 'Attribute';
+                    if (method_exists($item, $accessor)) {
+                        return $this->format($item->$accessor($this->field), $item->identifiableName());
                     }
 
                     return $this->format($this->field, $item->identifiableName());
@@ -178,9 +179,12 @@ class Revision extends Eloquent
             // if there was an issue
             // or, if it's a normal value
 
-            $mutator = 'get' . studly_case($this->field) . 'Attribute';
-            if (method_exists($main_model, $mutator)) {
-                return $this->format($this->field, $main_model->$mutator($this->$which_value));
+            // ashirk: We're going to call getFieldDisplayAttribute() rather than getFieldAttribute
+            // because this is for display purposes. Using getFieldAttribute conflates accessing the
+            // actual field value with getting value for display purposes to the end user.
+            $accessor = 'get' . studly_case($this->field) . 'DisplayAttribute';
+            if (method_exists($main_model, $accessor)) {
+                return $this->format($this->field, $main_model->$accessor($this->$which_value));
             }
         }
 
@@ -256,4 +260,5 @@ class Revision extends Eloquent
             return $value;
         }
     }
+
 }
