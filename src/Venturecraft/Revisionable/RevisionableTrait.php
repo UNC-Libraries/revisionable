@@ -337,9 +337,7 @@ trait RevisionableTrait
      */
     private function isRevisionable($field)
     {
-        if ($field === 'created_at' ||
-            $field === 'updated_at' || 
-            $field === 'deleted_at') {
+        if ($field === 'updated_at') {
             return false;
         }
 
