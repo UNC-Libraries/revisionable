@@ -102,7 +102,7 @@ trait RevisionableTrait
      */
     public static function classRevisionHistory($limit = 100, $order = 'desc')
     {
-        return \Venturecraft\Revisionable\Revision::where('revisionable_type', get_called_class())
+        return \Venturecraft\Revisionable\Revision::where('revisionable_type', class_basename(get_called_class()))
             ->orderBy('updated_at', $order)->limit($limit)->get();
     }
 
@@ -176,7 +176,7 @@ trait RevisionableTrait
 
             foreach ($changes_to_record as $key => $change) {
                 $revisions[] = array(
-                    'revisionable_type' => get_class($this),
+                    'revisionable_type' => class_basename(get_class($this)),
                     'revisionable_id'   => $this->getKey(),
                     'transaction_id'    => $this->getTransactionId(),
                     'ip_address'        => \Request::ip(),
@@ -219,7 +219,7 @@ trait RevisionableTrait
         if ((!isset($this->revisionEnabled) || $this->revisionEnabled))
         {
             $revisions[] = array(
-                'revisionable_type' => get_class($this),
+                'revisionable_type' => class_basename(get_class($this)),
                 'revisionable_id'   => $this->getKey(),
                 'transaction_id'    => $this->getTransactionId(),
                 'ip_address'        => \Request::ip(),
@@ -249,7 +249,7 @@ trait RevisionableTrait
             && $this->isRevisionable('deleted_at')
         ) {
             $revisions[] = array(
-                'revisionable_type' => get_class($this),
+                'revisionable_type' => class_basename(get_class($this)),
                 'revisionable_id'   => $this->getKey(),
                 'transaction_id'    => $this->getTransactionId(),
                 'ip_address'        => \Request::ip(),
