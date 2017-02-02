@@ -148,7 +148,12 @@ class Revision extends Eloquent
 
                     // Finally, now that we know the namespace of the related model
                     // we can load it, to find the information we so desire
-                    $item = $related_class::find($this->$which_value);
+                    $item;
+                    if (array_key_exists('Illuminate\Database\Eloquent\SoftDeletes', class_uses($related_class))) {
+                        $item = $related_class::withTrashed()->find($this->$which_value);
+                    } else {
+                        $item = $related_class::find($this->$which_value);
+                    }
 
                     if (is_null($this->$which_value) || $this->$which_value == '') {
                         $item = new $related_class;
