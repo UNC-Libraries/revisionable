@@ -289,7 +289,7 @@ trait RevisionableTrait
 
     /**
      * Get the transaction that this revision is a part of. This value
-     * should be set from within a the transaction block while saving
+     * should be set from within the transaction block while saving
      * your revisionable model.
      * 
      * For example:
