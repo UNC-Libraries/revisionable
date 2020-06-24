@@ -1,3 +1,5 @@
+## This revisionable fork has been archived. An updated version can be found [here](https://github.com/UNC-Libraries/revisionable-1).
+
 <img src="http://venturecraft.com.au/wp-content/uploads/2015/09/REVISIONABLE.png" style="width: 100%" alt="Revisionable" />
 
 <a href="https://packagist.org/packages/venturecraft/revisionable">
